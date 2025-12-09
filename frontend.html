@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Dialer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .phone-container {
+            background: #1a1a1a;
+            border-radius: 40px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 380px;
+            border: 8px solid #2a2a2a;
+        }
+
+        .phone-screen {
+            background: linear-gradient(180deg, #0f0f0f 0%, #1a1a1a 100%);
+            border-radius: 25px;
+            padding: 40px 25px;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .header {
+            text-align: center;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .header h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: #888;
+        }
+
+        .input-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .phone-input {
+            width: 100%;
+            padding: 18px;
+            font-size: 18px;
+            border: 2px solid #3a3a3a;
+            border-radius: 12px;
+            background: #2a2a2a;
+            color: #ffffff;
+            text-align: center;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .phone-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: #333;
+        }
+
+        .phone-input::placeholder {
+            color: #666;
+        }
+
+        .call-button {
+            background: linear-gradient(135deg, #34c759 0%, #30d158 100%);
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(52, 199, 89, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .call-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 199, 89, 0.5);
+        }
+
+        .call-button:active {
+            transform: translateY(0);
+        }
+
+        .call-button:disabled {
+            background: #444;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .call-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .status-message {
+            text-align: center;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .status-message.success {
+            background: rgba(52, 199, 89, 0.2);
+            color: #34c759;
+            border: 1px solid rgba(52, 199, 89, 0.3);
+        }
+
+        .status-message.error {
+            background: rgba(255, 59, 48, 0.2);
+            color: #ff3b30;
+            border: 1px solid rgba(255, 59, 48, 0.3);
+        }
+
+        .status-message.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .from-number {
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <div class="phone-screen">
+            <div class="header">
+                <h2>Phone Dialer</h2>
+                <p>Enter number to call</p>
+            </div>
+
+            <div class="input-section">
+                <div class="input-wrapper">
+                    <input 
+                        type="tel" 
+                        id="phoneInput" 
+                        class="phone-input" 
+                        placeholder="Enter phone number"
+                        maxlength="15"
+                    >
+                </div>
+
+                <button id="callButton" class="call-button">
+                    <svg class="call-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                    </svg>
+                    Call Now
+                </button>
+
+                <div id="statusMessage" class="status-message hidden"></div>
+
+                <div class="from-number">
+                    Calling from: +12677151692
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const phoneInput = document.getElementById('phoneInput');
+        const callButton = document.getElementById('callButton');
+        const statusMessage = document.getElementById('statusMessage');
+
+        // Handle call button click
+        callButton.addEventListener('click', async () => {
+            const toNumber = phoneInput.value.trim();
+            
+            if (!toNumber) {
+                showStatus('Please enter a phone number', 'error');
+                return;
+            }
+
+            // Disable button during call
+            callButton.disabled = true;
+            callButton.textContent = 'Calling...';
+
+            try {
+                const response = await fetch('https://hypothetical-addison-annually.ngrok-free.dev/dialout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'ngrok-skip-browser-warning': 'true'
+                    },
+                    body: JSON.stringify({
+                        to_number: toNumber,
+                        from_number: '+12677151692'
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showStatus('Call initiated successfully!', 'success');
+                } else {
+                    showStatus('Failed to initiate call. Please try again.', 'error');
+                }
+            } catch (error) {
+                showStatus('Error: ' + error.message, 'error');
+            } finally {
+                // Re-enable button
+                callButton.disabled = false;
+                callButton.innerHTML = `
+                    <svg class="call-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                    </svg>
+                    Call Now
+                `;
+            }
+        });
+
+        function showStatus(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message ${type}`;
+            
+            setTimeout(() => {
+                statusMessage.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Allow Enter key to trigger call
+        phoneInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                callButton.click();
+            }
+        });
+    </script>
+</body>
+</html>
